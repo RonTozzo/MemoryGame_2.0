@@ -122,3 +122,48 @@ for x in range(DIM_X):
 
 for card in cards:
     card.draw_card()
+
+while 1:
+    for event in pygame.event.get():
+        if not is_winner and (
+            event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.MOUSEBUTTONUP
+        ):
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                pos_down = pygame.mouse.get_pos()
+            if event.type == pygame.MOUSEBUTTONUP:
+                pos_up = pygame.mouse.get_pos()
+            for card in cards:
+                if card.card_rect.collidepoint(pos_down):
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        card.show_color_index()
+                        if is_letters:
+                            sound_samples_letters[card.color_index].play()
+                        else:
+                            sound_samples_num[card.color_index].play()
+
+                    if event.type == pygame.MOUSEBUTTONUP:
+                        if (
+                            isinstance(previous_card, BaseCard)
+                            and previous_card != card
+                            and previous_card.color_index == card.color_index
+                            and card.card_rect.collidepoint(pos_up)
+                        ):
+                            card.show_color_index()
+                            previous_card.show_color_index()
+                            right_sound.play()
+                            if (
+                                card.hide_color_index_after_click
+                                and previous_card.hide_color_index_after_click
+                            ):
+                                opened_cards += 2
+                            previous_card.hide_color_index_after_click = False
+                            card.hide_color_index_after_click = False
+                            if opened_cards >= DIM_X * DIM_Y:
+                                is_winner = True
+                                screen.fill(WHITE)
+                                screen.blit(image, image_rect)
+                                children_hooray_sound.play()
+                        else:
+                            if card.hide_color_index_after_click:
+                                card.hide_color_index()
+                        previous_card = card
