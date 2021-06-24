@@ -167,3 +167,34 @@ while 1:
                             if card.hide_color_index_after_click:
                                 card.hide_color_index()
                         previous_card = card
+
+        elif is_winner and event.type == pygame.MOUSEBUTTONUP:
+            screen.fill(WHITE)
+            if current_level < len(level_colors_ranges) - 1:
+                current_level += 1
+            else:
+                current_level = 0
+                is_letters = not is_letters
+            colors = fill_random_colors(
+                (DIM_X * DIM_Y) // 2, level_colors_ranges[current_level]
+            )
+            random.shuffle(colors_indices_list)
+            random.shuffle(letters_list)
+            previous_card = None  # Armazena carta anterior
+            opened_cards = 0
+            is_winner = False
+            for i, card in enumerate(cards):
+                card.hide_color_index_after_click = True
+                card.color = colors[colors_indices_list[i]]
+                if is_letters:
+                    card.color_index = letters_list[colors_indices_list[i]]
+                else:
+                    card.color_index = colors_indices_list[i]
+                card.draw_card()
+
+        if event.type == pygame.QUIT:
+            pygame.display.quit()
+            sys.exit()
+
+    pygame.display.flip()
+    clock.tick(30)
