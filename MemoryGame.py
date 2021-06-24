@@ -3,6 +3,9 @@ import sys
 import random
 import string
 import os.path
+pygame.mixer.init()
+pygame.init()
+pygame.font.init()
 
 DIM_X = 4
 DIM_Y = 3
@@ -80,7 +83,7 @@ class ColorCard(BaseCard):
         self.draw_card()
 
 
-        pygame.init()
+        
 
 screen = pygame.display.set_mode(
     (SCREEN_X_SIZE, SCREEN_Y_SIZE),
