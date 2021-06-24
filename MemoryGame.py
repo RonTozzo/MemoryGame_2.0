@@ -78,3 +78,47 @@ class ColorCard(BaseCard):
 
     def hide_color_index(self):
         self.draw_card()
+
+
+        pygame.init()
+
+screen = pygame.display.set_mode(
+    (SCREEN_X_SIZE, SCREEN_Y_SIZE),
+)
+pygame.display.set_caption("Memory Card Game")
+screen.fill(WHITE)
+
+image = pygame.image.load(os.path.join("pic", "color-balloons-clipart-crop.png"))
+image_rect = image.get_rect()
+image_rect.center = (SCREEN_X_SIZE // 2, SCREEN_Y_SIZE // 2)
+
+children_hooray_sound = pygame.mixer.Sound(os.path.join("sound", "children_hooray.ogg"))
+right_sound = pygame.mixer.Sound(os.path.join("sound", "right.ogg"))
+
+sound_samples_num = [pygame.mixer.Sound(os.path.join("sound", "synth", f"{num}.ogg")) for num in range(10)]
+sound_samples_letters = {
+    letter: pygame.mixer.Sound(os.path.join("sound", "synth", f"{letter}.ogg"))
+    for letter in list(string.ascii_uppercase)
+}
+
+clock = pygame.time.Clock()
+
+for x in range(DIM_X):
+    for y in range(DIM_Y):
+        if is_letters:
+            color_index = letters_list[colors_indices_list[x * DIM_Y + y]]
+        else:
+            color_index = colors_indices_list[x * DIM_Y + y]
+        cards.append(
+            ColorCard(
+                screen,
+                colors[colors_indices_list[x * DIM_Y + y]],
+                (x, y),
+                CARD_X_SIZE,
+                CARD_Y_SIZE,
+                color_index,
+            )
+        )
+
+for card in cards:
+    card.draw_card()
